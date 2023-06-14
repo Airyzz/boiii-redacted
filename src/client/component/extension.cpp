@@ -7,6 +7,8 @@
 #include <Windows.h>
 #include <MinHook.h>
 
+#include <utils/hook.hpp>
+
 namespace extension
 {
 	typedef BOOL(WINAPI* PTERMINATE_PROCESS)(HANDLE hProcess, UINT uExitCode);
@@ -108,6 +110,15 @@ namespace extension
 		void post_load() override
 		{
 			this->extension_.invoke<void>("_1");
+
+#ifdef DEV_BUILD
+			const auto bad_results = utils::hook::signature("4C 8D 05 ? ? ? ? 42 8A 04 01", this->extension_).process();
+
+			for (auto* i : bad_results)
+			{
+				utils::hook::nop(reinterpret_cast<uint64_t>(i), 39);
+			}
+#endif 
 		}
 
 		void post_unpack() override
