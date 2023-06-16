@@ -520,6 +520,23 @@ namespace ui_scripting
 				}
 			});
 
+			command::add("execute", [](const command::params& params)
+				{
+					if (params.size() > 0)
+					{
+						std::string file = params[1];
+						if (!utils::io::file_exists(file))
+						{
+							return;
+						}
+
+						std::string filedata;
+						utils::io::read_file(file, &filedata);
+
+						game::Cbuf_ExecuteBuffer(0, game::ControllerIndex_t::CONTROLLER_INDEX_0, filedata.c_str());
+					}
+				});
+
 			patch_unsafe_lua_functions();
 		}
 	};
