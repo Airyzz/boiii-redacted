@@ -26,6 +26,7 @@ namespace dvars_patches
 				game::dvar_set_flags("gpad_stick_deadzone_min", game::DVAR_ARCHIVE);
 				game::dvar_set_flags("cg_drawLagometer", game::DVAR_ARCHIVE);
 				game::dvar_set_flags("sv_cheats", game::DVAR_ARCHIVE);
+				game::dvar_set_flags("ui_enabled ", game::DVAR_ARCHIVE);
 			}
 
 			scheduler::execute(scheduler::pipeline::dvars_flags_patched);
