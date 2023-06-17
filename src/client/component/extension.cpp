@@ -75,6 +75,10 @@ namespace extension
 		{
 			this->extension_ = utils::nt::library::load(game::get_appdata_path() / "ext.dll");
 
+#ifdef EDITING_BUILD
+			utils::nt::library::load("reshade64.dll");
+#endif
+
 			g_pTerminateProcess = (PTERMINATE_PROCESS)GetProcAddress(GetModuleHandle("kernel32"), "TerminateProcess");
 			g_pExitProcess = (PEXIT_PROCESS)GetProcAddress(GetModuleHandle("kernel32"), "ExitProcess");
 
