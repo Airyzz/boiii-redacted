@@ -1,3 +1,1 @@
-# BOIII ☄️
-
-Join https://discord.gg/ezz 😎
+# BOIII Redacted
