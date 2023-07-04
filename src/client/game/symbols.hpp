@@ -105,6 +105,7 @@ namespace game
 	// WFT
 	WEAK symbol<char* (int a1)> sub_1412D7160{ 0x1412D7160 };
 	WEAK symbol<__int64(const char* name)> BB_RegisterHighWaterMark{ 0x14229E7E0 };
+	WEAK symbol<__int64(int a1, unsigned __int64 a2)> BB_SetHighWaterMark{ 0x14229EB90 };
 	WEAK symbol<void(__int64 a1, __int64 a2)> MSG_WriteLong{ 0x142172680 };
 	WEAK symbol<__int64(int a1, unsigned __int64 a2)> sub_14229EB90{ 0x14229EB90 };
 	WEAK symbol<void(__int64 a1, unsigned __int16 a2)> sub_1421726D0{ 0x1421726D0 };
