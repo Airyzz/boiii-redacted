@@ -17,6 +17,7 @@ namespace demo_patches
 		utils::hook::detour demo_start_record_hook;
 		utils::hook::detour demo_is_enabled_hook;
 		utils::hook::detour demo_add_anim_hook;
+		utils::hook::detour sub_141433370_hook;
 
 		__int64 demo_start_record_f_stub()
 		{
@@ -31,54 +32,43 @@ namespace demo_patches
 			int unk2;
 		};
 
-		std::vector<demo_anim_bundled> demo;
+		std::vector<demo_anim_bundled> demo_bundled;
 
 		__int64 __fastcall demo_add_anim_stub(int a1, int a2)
 		{
 			int v2 = *(int*)(0x1594566F0_g);
-			for (auto& data : demo) {
+			for (auto& data : demo_bundled) {
 				if ((data).id == a1 && (data).unk1 == v2) {
 					return (__int64)0x15943FCDC_g;
 				}
 			}
 			demo_anim_bundled anim;
 			anim.id = a1; anim.unk1 = v2; anim.unk2 = a2;
-			demo.emplace_back(anim); 
+			demo_bundled.emplace_back(anim);
 			return demo_add_anim_hook.invoke<__int64>(a1, a2);
 		}
 
+
+		struct demo_archived_animtree
+		{
+			std::string name;
+			int unk1;
+			__int64 unk2;
+		};
+
+		std::vector<demo_archived_animtree> demo_animtree;
+
 		void __fastcall sub_141433370(const char* a1, __int64 a2, int a3)
 		{
-			int v3; // eax
-			int v4; // ebx
-			__int64 v5; // rsi
-			char* v7; // rbx
-
-			__int8* byte_159445CE0 = (__int8*)0x159445CE0_g;
-
-			v3 = *(int*)0x1594466E0_g;
-			v4 = 0;
-			v5 = a3;
-			if (*(int*)0x1594466E0_g <= 0)
-			{
-			LABEL_4:
-				v7 = &byte_159445CE0[80 * v3];
-				game::sub_1422E9410(v7, 64i64, (__int64)a1);
-				*((int*)v7 + 16) = v5;
-				*((__int64*)v7 + 9) = *(__int64*)0x1594566E8_g;
-				game::sub_142C3D960();
-				*(__int64*))0x1594566E8_g += v5;
-				++*(int*)0x1594466E0_g;
-			}
-			else
-			{
-				while ((unsigned int)stricmp(a1, &byte_159445CE0[80 * v4]))
-				{
-					v3 = *(int*)0x1594466E0;
-					if (++v4 >= *(int*)0x1594466E0)
-						goto LABEL_4;
+			demo_archived_animtree animtree;
+			animtree.name = a1; animtree.unk1 = a3; animtree.unk2 = *(__int64*)0x1594566E8_g;
+				for (auto& data : demo_animtree) {
+					if (data.name == std::string(a1) && (data).unk1 == a3) {
+						return sub_141433370_hook.invoke(a1, a2, a3);
+					}
 				}
-			}
+			demo_animtree.emplace_back(animtree);
+			sub_141433370_hook.invoke(a1, a2, a3);
 		}
 
 		__int64 __fastcall sub_141433460(__int64 a1, __int64 a2)
@@ -87,11 +77,9 @@ namespace demo_patches
 			__int64 result; // rax
 			int v6; // ebp
 			int* v7; // r14
-			__int64 v8; // rdi
-			__int64 v9; // rbx
-			unsigned int v10; // ebx
 
-			game::MSG_WriteLong(a1, *(int*)(a2 + 0x7180));
+			int size = (int)demo_animtree.size();
+			game::MSG_WriteLong(a1, size);
 			if ((*(int*)0x1499A7798_g & 1) != 0)
 			{
 				v4 = *(unsigned int*)0x1499A7794_g;
@@ -99,32 +87,26 @@ namespace demo_patches
 			else
 			{
 				*(unsigned int*)0x1499A7798_g |= 1u;
-				v4 = game::BB_RegisterHighWaterMark("demo_archived_animtree_count");
+				v4 = (unsigned int)game::BB_RegisterHighWaterMark("demo_archived_animtree_count");
 				*(unsigned int*)0x1499A7794_g = v4;
 			}
-			result = game::BB_SetHighWaterMark(v4, *(unsigned int*)(a2 + 0x7180));
+			result = game::BB_SetHighWaterMark(v4, size);
 			v6 = 0;
-			printf("[sub_141433460] count %lld\n", *(int*)(a2 + 0x7180));
-			if (*(int*)(a2 + 0x7180) > 0)
+			if (demo_animtree.size() > 0)
 			{
 				v7 = (int*)(a2 + 0x67C0);
 				do
 				{
-					v8 = a2 + 80 * v6;
-					v9 = -1i64;
-					do
-						++v9;
-					while (*(__int16*)(v8 + v9 + 0x6780));
-					v10 = v9 + 1;
-					game::MSG_WriteLong(a1, (int)v10);
-					game::sub_1421577E0(a1, (const char*)(v8 + 0x6780), v10);
-					game::MSG_WriteLong(a1, *v7);
-					printf("[sub_141433460] %lld : %s : %lld %s\n", v6, (const char*)(v8 + 0x6780), *v7, (const char*)*((__int64*)v7 + 1));
-					result = game::sub_1421577E0(a1, (const char*)*((__int64*)v7 + 1), *v7);
+					int strsize = (int)demo_animtree[v6].name.size();
+					game::MSG_WriteLong(a1, strsize);
+					game::sub_1421577E0(a1, demo_animtree[v6].name.c_str(), strsize);
+					game::MSG_WriteLong(a1, demo_animtree[v6].unk1);
+					result = game::sub_1421577E0(a1, (const char*)demo_animtree[v6].unk2, demo_animtree[v6].unk1);
 					++v6;
 					v7 += 20;
-				} while (v6 < *(int*)(a2 + 0x7180));
+				} while (v6 < size);
 			}
+			demo_animtree.clear();
 			return result;
 		}
 
@@ -158,8 +140,8 @@ namespace demo_patches
 				do
 				{
 					v8 &= 0xFFFFFFFF00000000;
-					game::sub_1421726D0(a1, (unsigned short)demo[v6].unk1);
-					v9 = (__int64)game::sub_1412D7160((demo[v6].id));
+					game::sub_1421726D0(a1, (unsigned short)demo_bundled[v6].unk1);
+					v9 = (__int64)game::sub_1412D7160((demo_bundled[v6].id));
 					v10 = v9;
 					if (v9)
 					{
@@ -175,12 +157,12 @@ namespace demo_patches
 					{
 						game::sub_1421577E0(a1, (const char*)v10, (unsigned int)v8);
 					}
-					result = game::sub_1421576F0(a1, (demo[v6].unk2), 3);
+					result = game::sub_1421576F0(a1, (demo_bundled[v6].unk2), 3);
 					++v6;
 					v7 += 3;
 				} while (v6 < *(int*)(a2 + 0x778));
 			}
-			demo.clear();
+			demo_bundled.clear();
 			return result;
 		}
 
@@ -215,6 +197,7 @@ namespace demo_patches
 			utils::hook::nop(0x1407F205D_g, 2);
 			utils::hook::call(0x141433F08_g, sub_141433790);
 			utils::hook::call(0x141433F13_g, sub_141433460);
+	//		utils::hook::call(0x1412D4DF5_g, sub_141433370);
 
 			//Demo_OpenFileRead
 		//	utils::hook::call(0x1426013CE_g, demo_open_file_read_stub); // ^^
@@ -225,6 +208,7 @@ namespace demo_patches
 
 			command::add("demo_record", game::Demo_StartRecord_f);
 			demo_add_anim_hook.create(0x141433300_g, demo_add_anim_stub);
+			sub_141433370_hook.create(0x141433370_g, sub_141433370);
 		}
 	};
 }

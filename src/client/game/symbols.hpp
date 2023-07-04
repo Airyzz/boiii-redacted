@@ -107,10 +107,12 @@ namespace game
 	WEAK symbol<__int64(const char* name)> BB_RegisterHighWaterMark{ 0x14229E7E0 };
 	WEAK symbol<__int64(int a1, unsigned __int64 a2)> BB_SetHighWaterMark{ 0x14229EB90 };
 	WEAK symbol<void(__int64 a1, __int64 a2)> MSG_WriteLong{ 0x142172680 };
+	WEAK symbol<void()> sub_142C3D960{ 0x142C3D960 };
 	WEAK symbol<__int64(int a1, unsigned __int64 a2)> sub_14229EB90{ 0x14229EB90 };
 	WEAK symbol<void(__int64 a1, unsigned __int16 a2)> sub_1421726D0{ 0x1421726D0 };
 	WEAK symbol<__int64(__int64 a1, const char* a2, int a3)> sub_1421577E0{ 0x1421577E0 };
 	WEAK symbol<__int64(__int64 a1, __int64 a2, int a3)> sub_1421576F0{ 0x1421576F0 };
+	WEAK symbol<void(char* a1, __int64 a2, __int64 a3)> sub_1422E9410{ 0x1422E9410 };
 	WEAK symbol<int> dword_1499A77A0{ 0x1499A77A0 };
 	WEAK symbol<int> dword_1499A779C{ 0x1499A779C };
 
