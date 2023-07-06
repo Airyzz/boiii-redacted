@@ -103,10 +103,22 @@ namespace game
 	WEAK symbol<uint8_t(msg_t* msg)> MSG_ReadByte{0x142155450, 0x14050D1B0};
 
 	// WFT
-	WEAK symbol<char* (int a1)> sub_1412D7160{ 0x1412D7160 };
+	WEAK symbol<__int64()> sub_1414323D0{ 0x1414323D0 };
+	WEAK symbol<__int64()> sub_142600220{ 0x142600220 };
+	WEAK symbol<__int64(__int64 a1)> sub_1412D7E90{ 0x1412D7E90 };
+//	WEAK symbol<__int64(__int64 a1, __int64 a2)> sub_1412D7E90{ 0x1412D7E90 };
+	WEAK symbol<__int64(__int64 a1)> sub_142156F30{ 0x142156F30 };
+	WEAK symbol<__int64(__int64, __int64, __int64)> SL_GetString_{ 0x1412D7B20 };
+	WEAK symbol<__int64(__int64, int)> sub_142155300{ 0x142155300 };
+	WEAK symbol<__int64(int a1, int,int,int,int,int,int)> sub_140119190{ 0x140119190 };
+	WEAK symbol<__int64(__int64 a1, __int64 a2, __int64 a3, unsigned int a4, unsigned int a5)> sub_1412C4540{ 0x1412C4540 };
+	WEAK symbol<__int64(unsigned int a1, unsigned int a2, unsigned int a3)> sub_1412C4800{ 0x1412C4800 };
+	WEAK symbol<char* (int a1)> SL_ConvertToString{ 0x1412D7160 };
 	WEAK symbol<__int64(const char* name)> BB_RegisterHighWaterMark{ 0x14229E7E0 };
 	WEAK symbol<__int64(int a1, unsigned __int64 a2)> BB_SetHighWaterMark{ 0x14229EB90 };
 	WEAK symbol<void(__int64 a1, __int64 a2)> MSG_WriteLong{ 0x142172680 };
+	WEAK symbol<__int64(int*)> MSG_ReadLong{ 0x142156910 };
+	WEAK symbol<__int64(int* a1, __int64 a2, int a3)> sub_1421554B0{ 0x1421554B0 };
 	WEAK symbol<void()> sub_142C3D960{ 0x142C3D960 };
 	WEAK symbol<__int64(int a1, unsigned __int64 a2)> sub_14229EB90{ 0x14229EB90 };
 	WEAK symbol<void(__int64 a1, unsigned __int16 a2)> sub_1421726D0{ 0x1421726D0 };
@@ -115,6 +127,7 @@ namespace game
 	WEAK symbol<void(char* a1, __int64 a2, __int64 a3)> sub_1422E9410{ 0x1422E9410 };
 	WEAK symbol<int> dword_1499A77A0{ 0x1499A77A0 };
 	WEAK symbol<int> dword_1499A779C{ 0x1499A779C };
+	WEAK symbol<int> TlsIndex{ 0x15A8A4860 };
 
 
 	// NET

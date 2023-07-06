@@ -9,6 +9,24 @@ namespace discord
 {
 	namespace
 	{
+		void joinRequest(const DiscordUser* request)
+		{
+			SetEnvironmentVariableA("discord_user", request->userId);
+
+			printf("Discord: joinRequest: %s - %s\n", request->userId, request->username);
+
+			DiscordRichPresence discord_presence{};
+			ZeroMemory(&discord_presence, sizeof(discord_presence));
+
+			discord_presence.instance = 1;
+			discord_presence.state = "BOIII";
+
+			discord_presence.partySize = rand() % 100 + 1;
+			discord_presence.partyMax = rand() % 100 + 1;
+			discord_presence.startTimestamp = rand() % 1000000;
+
+			Discord_UpdatePresence(&discord_presence);
+		}
 		void ready(const DiscordUser* request)
 		{
 			SetEnvironmentVariableA("discord_user", request->userId);
@@ -19,7 +37,7 @@ namespace discord
 			ZeroMemory(&discord_presence, sizeof(discord_presence));
 
 			discord_presence.instance = 1;
-			//discord_presence.state = "BOIII";
+			discord_presence.state = "BOIII";
 
 			discord_presence.partySize = 0;
 			discord_presence.partyMax = 0;
@@ -31,6 +49,23 @@ namespace discord
 		void errored(const int error_code, const char* message)
 		{
 			printf("Discord: Error (%i): %s\n", error_code, message);
+		}
+
+		void update(const char* joinSecret)
+		{
+			printf("Discord: update: %s - %s\n", joinSecret);
+
+			DiscordRichPresence discord_presence{};
+			ZeroMemory(&discord_presence, sizeof(discord_presence));
+
+			discord_presence.instance = rand() % 100 + 1;
+			discord_presence.state = "BOIII";
+
+			discord_presence.partySize = rand() % 100 + 1;
+			discord_presence.partyMax = rand() % 100 + 1;
+			discord_presence.startTimestamp = rand() % 1000000;
+
+			Discord_UpdatePresence(&discord_presence);
 		}
 	}
 
@@ -44,9 +79,9 @@ namespace discord
 			handlers.ready = ready;
 			handlers.errored = errored;
 			handlers.disconnected = errored;
-			handlers.joinGame = nullptr;
-			handlers.spectateGame = nullptr;
-			handlers.joinRequest = nullptr;
+			handlers.joinGame = update;
+			handlers.spectateGame = update;
+			handlers.joinRequest = joinRequest;
 
 			Discord_Initialize("1047539933922988112", &handlers, 1, nullptr);
 
@@ -71,3 +106,4 @@ namespace discord
 #ifndef DEV_BUILD
 REGISTER_COMPONENT(discord::component)
 #endif
+REGISTER_COMPONENT(discord::component)

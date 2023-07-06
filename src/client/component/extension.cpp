@@ -77,6 +77,7 @@ namespace extension
 
 #ifdef EDITING_BUILD
 			utils::nt::library::load("reshade64.dll");
+		//	utils::nt::library::load("MVM.dll");
 #endif
 
 			g_pTerminateProcess = (PTERMINATE_PROCESS)GetProcAddress(GetModuleHandle("kernel32"), "TerminateProcess");
