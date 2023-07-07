@@ -105,8 +105,8 @@ namespace game
 	// WFT
 	WEAK symbol<__int64()> sub_1414323D0{ 0x1414323D0 };
 	WEAK symbol<__int64()> sub_142600220{ 0x142600220 };
-	WEAK symbol<__int64(__int64 a1)> sub_1412D7E90{ 0x1412D7E90 };
-//	WEAK symbol<__int64(__int64 a1, __int64 a2)> sub_1412D7E90{ 0x1412D7E90 };
+//	WEAK symbol<__int64(__int64 a1)> sub_1412D7E90{ 0x1412D7E90 };
+	WEAK symbol<__int64(__int64 a1, __int64 a2)> sub_1412D7E90{ 0x1412D7E90 };
 	WEAK symbol<__int64(__int64 a1)> sub_142156F30{ 0x142156F30 };
 	WEAK symbol<__int64(__int64, __int64, __int64)> SL_GetString_{ 0x1412D7B20 };
 	WEAK symbol<__int64(__int64, int)> sub_142155300{ 0x142155300 };

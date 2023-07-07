@@ -235,10 +235,10 @@ namespace demo_patches
 				v6 = (int*)(a2 + 1920);
 				do
 				{
-					*(v6 - 1) = (__int16)game::sub_142156F30((__int64)a1);
+					int unk1 = (__int16)game::sub_142156F30((__int64)a1);
 					v7 = game::sub_142156F30((__int64)a1);
 					v8 = v7;
-					int unk1 = *(v6 - 1);
+					*(v6 - 1) = unk1;
 					if (v7 > 0)
 						game::sub_1421554B0(a1, (__int64)v10, v7);
 		
@@ -255,7 +255,7 @@ namespace demo_patches
 					demo_anim_bundled anim;
 					anim.id = v9;
 					anim.unk1 = unk1;
-					anim.unk2 = *(v6 - 2);
+					anim.unk2 = result;
 					for (auto data : demo_bundled) {
 						if (data.id == v9) {
 							is_ = false;
@@ -285,7 +285,6 @@ namespace demo_patches
 			v29 = a3;
 			v3 = a3;
 			result = (int*)game::sub_1414323D0();
-		//	printf("count = %lld\n", *result);
 			v30 = result;
 			v9 = result + 1;
 			int size = (int)demo_bundled.size();
@@ -293,15 +292,9 @@ namespace demo_patches
 			for (i = 0; i < size; v9 += 3)
 			{
 				int q, b, c;
-				q = demo_b[i].id;
-				b = demo_b[i].unk1;
-				c = demo_b[i].unk2;
-			//		q = v9[1];
-			//		b = *v9;
-			//		c = v9[2];
-
-			//	printf("%d : %d : %d : %d : %d\n",i, v3, *v9, v9[2], v9[1]);
-			//	printf("%d : %d : %d : %d : %d\n",i, v3, b, c, q);
+				q = demo_b[i].id; //v9[1];
+				b = demo_b[i].unk1; //*v9;
+				c = demo_b[i].unk2; //v9[2];
 				if (b == v3)
 				{
 					v11 =c;
@@ -326,15 +319,11 @@ namespace demo_patches
 							demo_add_anim_hook.invoke<__int64>(q, 0);
 						game::sub_1412C4540(a1, a2, q, *(int*)0x14A72A084_g, 0);
 					}
-					char* v22 = (char*)0x1450DC2D0_g;
-					//__int64 v19 = (__int64)&v22[28 * q];
-					__int64 v19 = (__int64)(volatile signed __int32*)((char*)0x1450DC2D0_g + 28 * q);;
-				//	game::sub_1412D7E90(q, v19);
-					game::sub_1412D7E90(q);
+				    __int64 v19 = (__int64)game::SL_ConvertToString(q);
+					game::sub_1412D7E90(q, v19);
 				}
 				++i;
 			}
-	//		demo_bundled.clear();
 			return result;
 		}
 	}
