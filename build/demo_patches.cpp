@@ -19,10 +19,7 @@ namespace demo_patches
 		utils::hook::detour demo_is_enabled_hook;
 		utils::hook::detour demo_add_anim_hook;
 		utils::hook::detour sub_141433370_hook;
-		utils::hook::detour sub_141432B00_hook;
-		utils::hook::detour sub_1412C6AA0_hook;
-		utils::hook::detour SL_ConvertToString_hook;
-		std::mutex g_lock;
+		;
 		__int64 demo_start_record_f_stub()
 		{
 			__int64 result = demo_start_record_hook.invoke<__int64>();
@@ -72,7 +69,6 @@ namespace demo_patches
 					return sub_141433370_hook.invoke(a1, a2, a3);
 				}
 			}
-			printf("animtree %s : %lld : %lld : %lld\n", a1, a2, a3, *(__int64*)0x1594566E8_g);
 			demo_animtree.emplace_back(animtree);
 			sub_141433370_hook.invoke(a1, a2, a3);
 		}
@@ -164,12 +160,6 @@ namespace demo_patches
 						game::sub_1421577E0(a1, (const char*)v10, (unsigned int)v8);
 					}
 					result = game::sub_1421576F0(a1, (demo_bundled[v6].unk2), 3);
-
-					const char* v19 = (const char*)game::SL_ConvertToString((demo_bundled[v6].id));
-					//	printf("%d : %s\n", (demo_bundled[v6].id), v19);
-					utils::io::write_file("anims.log", utils::string::va("%d : %d : %d : %s\n",
-						demo_bundled[v6].id, demo_bundled[v6].unk1, demo_bundled[v6].unk2, v19), true);
-
 					++v6;
 					v7 += 3;
 				} while (v6 < *(int*)(a2 + 0x778));
@@ -178,12 +168,6 @@ namespace demo_patches
 			return result;
 		}
 
-		char* SL_ConvertToString_stub(int id)
-		{
-			const char* name = SL_ConvertToString_hook.invoke<char*>(id);
-		//	utils::io::write_file("SL_ConvertToString_stub.log", utils::string::va("ConvertToString %d : %s\n", id, name),true);
-			return (char*)name;
-		}
 		bool demo_is_enable_stub()
 		{
 			return true;
@@ -195,338 +179,6 @@ namespace demo_patches
 			return handle;
 		}
 
-		//write anim_tree
-		__int64 __fastcall sub_1414326E0(int* a1, __int64 a2)
-		{
-			__int64 result; // rax
-			int v5; // ebp
-			int* v6; // rdi
-			int v7; // eax
-			int v8; // eax
-			__int64 v9; // rdx
-
-			*(__int64*)(a2 + 94600) = a2 + 29060;
-			result = game::MSG_ReadLong(a1);
-			v5 = 0;
-			*(int*)(a2 + 29056) = result;
-			//	printf("count ? = %lld\n", result);
-			if ((int)result > 0)
-			{
-				v6 = (int*)(a2 + 26560);
-				do
-				{
-					v7 = game::MSG_ReadLong(a1);
-					game::sub_1421554B0(a1, a2 + 80 * v5 + 26496, v7);
-					v8 = game::MSG_ReadLong(a1);
-					*v6 = v8;
-					v9 = *(__int64*)(a2 + 94600);
-					*((__int64*)v6 + 1) = v9;
-					game::sub_1421554B0(a1, v9, v8);
-					result = *v6;
-					*(__int64*)(a2 + 94600) += result;
-					++v5;
-					//		printf("%lld : %lld : %lld : %lld : %lld \n", v5, result, v9, v7, v8);
-					v6 += 20;
-				} while (v5 < *(int*)(a2 + 29056));
-			}
-			return result;
-		}
-
-		//wrie anim_bundled
-		unsigned __int64 __fastcall sub_141432B00(int* a1, __int64 a2)
-		{
-			sub_141432B00_hook.invoke<__int64>(a1, a2);
-			unsigned __int64 result; // rax
-			int v5; // ebp
-			int* v6; // rsi
-			__int16 v7; // ax
-			unsigned __int64 v8; // rbx
-			int v9; // eax
-			char v10[256]; // [rsp+20h] [rbp-128h] BYREF
-			demo_bundled.clear();
-			result = game::MSG_ReadLong(a1);
-			v5 = 0;
-
-			*(int*)(a2 + 1912) = result;
-			if ((int)result > 0)
-			{
-				v6 = (int*)(a2 + 1920);
-				do
-				{
-					int unk1 = (__int16)game::sub_142156F30((__int64)a1);
-					v7 = game::sub_142156F30((__int64)a1);
-					v8 = v7;
-					*(v6 - 1) = unk1;
-					if (v7 > 0)
-						game::sub_1421554B0(a1, (__int64)v10, v7);
-
-					v10[v8] = 0;
-					v9 = game::SL_GetString_((__int64)v10, 1i64, 11i64);
-					bool is_ = true;
-					*v6 = v9;
-					result = game::sub_142155300((__int64)a1, 3);
-					++v5;
-					v6 += 3;
-					*(v6 - 2) = result;
-
-					demo_anim_bundled anim;
-					anim.id = v9;
-					anim.unk1 = unk1;
-					anim.unk2 = result;
-					printf("%d : %d : %d : %d : %s\n", v5, v9, unk1, result, v10);
-
-					for (auto data : demo_bundled) {
-						if (data.id == v9, data.unk1 == unk1, anim.unk2 == result) {
-							is_ = false;
-						}
-					}
-					if (is_)
-						demo_bundled.emplace_back(anim);
-				} while (v5 < *(int*)(a2 + 1912));
-			}
-			return result;
-		}
-
-		int find_anim(std::string_view name)
-		{
-			for (int i = 0; i < 65536; i++)
-			{
-				char* res = game::SL_ConvertToString(i);
-				if (res)
-				{
-					std::string_view vwww = std::string_view (res);
-					printf("%d : %s\n", i, res);
-					if (vwww == name)
-						return i;
-				}
-			}
-			return 1;
-		}
-		void add_anim(int id, int unk1, int unk2)
-		{
-			int v9 = id;
-			demo_anim_bundled anim;
-			anim.id = v9;
-			anim.unk1 = unk1;
-			anim.unk2 = unk2;
-			printf("add_anim %d : %d : %d\n", v9, unk1, unk2);
-			bool is_ = true;
-
-			std::string_view vwww = game::SL_ConvertToString(v9);
-			//for (auto data : demo_bundled) {
-			//	if (data.id == v9 && data.unk1 == anim.unk1 && data.unk2 == anim.unk2) {
-			//		is_ = false;
-			//	}
-			//}
-			if (is_ && !vwww.empty())
-				demo_bundled.emplace_back(anim);
-		}
-		void add_anim(const char* name, int unk1, int unk2)
-		{
-			int v9 = game::SL_GetString_((__int64)name, 1i64, 11i64);
-			printf("add_anim %d : %s\n", v9, name);
-			demo_anim_bundled anim;
-			anim.id = v9;
-			anim.unk1 = unk1;
-			anim.unk2 = unk2;
-
-			bool is_ = true;
-			/*		for (auto data : demo_bundled) {
-						if (data.id == v9 && data.unk1 == anim.unk1 && data.unk2 == anim.unk2) {
-							is_ = false;
-						}
-					}*/
-			if (is_)
-				demo_bundled.emplace_back(anim);
-		}
-
-		//wrie anim_bundled
-		unsigned __int64 __fastcall sub_141432B00_(struct msg_t* a1, __int64 a2)
-		{
-			g_lock.lock();
-			int _result = sub_141432B00_hook.invoke<__int64>(a1, a2);
-
-		//	for (int i = 1; i < 60000; i++)
-			{
-			//	add_anim(i, 0, 0);
-				//	add_anim(i, 0, 1);
-				//	add_anim(i, 0, 2);
-				//	add_anim(i, 1, 2);
-			}
-
-			char v10[256]; // [rsp+20h] [rbp-128h] BYREF
-
-			int cout = *(int*)(a2 + 1912);
-			if ((int)cout > 0)
-			{
-				int v5 = 0;
-				int* v6 = (int*)(a2 + 1920);
-				do
-				{
-					int unk1 = *(v6 - 1);
-					demo_anim_bundled anim;
-					anim.id = *v6;
-					v6 += 3;
-					anim.unk1 = unk1;
-					anim.unk2 = *(v6 - 2);
-					const char* v19 = (const char*)game::SL_ConvertToString(anim.id);
-					printf("%d : %d : %d : %d : %s\n", v5, anim.id, unk1, anim.unk2, v19);
-
-					bool is_ = true;
-					for (auto data : demo_bundled) {
-						if (data.id == anim.id && data.unk1 == unk1 && data.unk2 == anim.unk2) {
-							is_ = false;
-						}
-					}
-					if (is_)
-						demo_bundled.emplace_back(anim);
-
-				  ++v5;
-				} while (v5 < cout);
-
-			}
-		//	int faces = find_anim("faces");
-		//	printf("faces = %d \n", faces);
-			//add_anim(7314, 1, 2);
-			//add_anim(7314, 1, 1);
-			//add_anim(7314, 0,2);
-			//add_anim(7314, 0, 1);
-
-			//add_anim(7314, 1, 2);
-			//add_anim(7314, 1, 1);
-			//add_anim(7314, 0,2);
-			//add_anim(7314, 0, 1);
-			g_lock.unlock();
-			return _result;
-			//unsigned __int64 result; // rax
-			//int v5; // ebpadd_anim
-			//int* v6; // rsi
-			//__int16 v7; // ax
-			//unsigned __int64 v8; // rbx
-			//int v9; // eax
-			//char v10[256]; // [rsp+20h] [rbp-128h] BYREF
-
-			//result = game::MSG_ReadLong((int*)a1);
-			//v5 = 0;
-			//*(int*)(a2 + 1912) = result;
-			//if ((int)result > 0)
-			//{
-			//	v6 = (int*)(a2 + 1920);
-			//	do
-			//	{
-			//		int unk1 = (__int16)game::sub_142156F30((__int64)a1);
-			//		*(v6 - 1) = unk1;
-			//		v7 = game::sub_142156F30((__int64)a1);
-			//		v8 = v7;
-			//		if (v7 > 0)
-			//			game::sub_1421554B0((int*)a1, (__int64)v10, v7);
-			//		if (v8 >= 256)
-			//		{
-			//			continue;
-			//		}
-			//		v10[v8] = 0;
-			//		v9 = game::SL_GetString_((__int64)v10, 1i64, 11u);
-			//		*v6 = v9;
-			//		//_InterlockedIncrement((volatile unsigned int*)((char*)0x1450DC2D0_g + (unsigned int)(28 * v9)));
-			//		//++*((volatile unsigned int*)((char*)0x1450DC2D0_g + (unsigned int)(28 * v9)));
-			//		result = game::sub_142155300((__int64)a1, 3);
-			//		++v5;
-			//		v6 += 3;
-			//		*(v6 - 2) = result;
-
-			//		demo_anim_bundled anim;
-			//		anim.id = v9;
-			//		anim.unk1 = unk1;
-			//		anim.unk2 = result;
-			//		printf("%d : %d : %d : %d : %s\n", v5, v9, unk1, result, v10);
-
-			//		bool is_ = true;
-			//		for (auto data : demo_bundled) {
-			//			if (data.id == v9, data.unk1 == unk1, anim.unk2 == result) {
-			//				is_ = false;
-			//			}
-			//		}
-			//		if (is_)
-			//			demo_bundled.emplace_back(anim);
-
-			////		printf("%d : %d : %d : %d : %s\n", v5, v9, unk1, result, v10);
-			//	} while (v5 < *(int*)(a2 + 1912));
-			//}
-			//return result;
-		}
-
-		//read anim_bundled
-		void returm_mul()
-		{
-			return;
-		}
-		int* __fastcall sub_1412C6AA0_(unsigned int a1, unsigned int a2, int a3)
-		{
-			g_lock.lock();
-
-			printf("%d : %d : %d\n", a1, a2, a3);
-		//	return sub_1412C6AA0_hook.invoke<int*>(a1, a2, a3);
-			int v3; // edi
-			int* result; // rax
-			int* v9; // rbx
-			int i; // er15
-			int v11; // ecx
-			int v12; // ecx
-			int v29; // [rsp+A0h] [rbp+18h]
-			int* v30; // [rsp+A8h] [rbp+20h]
-
-			v29 = a3;
-			v3 = a3;
-			result = (int*)game::sub_1414323D0();
-			v30 = result;
-			v9 = result + 1;
-			int size = (int)demo_bundled.size();
-
-
-			auto demo_b = demo_bundled;
-			for (i = 0; i < size; v9 += 3)
-			{
-				int q, b, c;
-				q = demo_b[i].id; //v9[1];
-				b = demo_b[i].unk1; //*v9;
-				c = demo_b[i].unk2; //v9[2];
-			//	q = v9[1];
-			//	b = *v9;
-			//	c = v9[2];
-				if (b == v3)
-				{
-					v11 =c;
-					if (v11)
-					{
-						v12 = v11 - 1;
-						if (v12)
-						{
-							if (v12 == 1)
-								game::sub_1412C4800(a1, a2, q);
-						}
-						else
-						{
-							if ((unsigned __int8)game::sub_142600220())
-								demo_add_anim_hook.invoke<__int64>(q, 1);
-							game::sub_1412C4540(a1, a2, q, *(int*)0x14A72A088_g, 96);
-						}
-					}
-					else
-					{
-						if ((unsigned __int8)game::sub_142600220())
-							demo_add_anim_hook.invoke<__int64>(q, 0);
-						game::sub_1412C4540(a1, a2, q, *(int*)0x14A72A084_g, 0);
-					}
-				    const char* v19 = (const char*)game::SL_ConvertToString(q);
-					printf("%d : %d : %d : %s\n", q, b, c, v19);
-					game::sub_1412D7E90(q);
-				}
-				++i;
-			}
-			g_lock.unlock();
-
-			return result;
-		}
 	}
 
 	class component final : public client_component
@@ -549,25 +201,6 @@ namespace demo_patches
 			utils::hook::call(0x141433F08_g, sub_141433790);
 			utils::hook::call(0x141433F13_g, sub_141433460);
 
-			//utils::hook::jump(0x14141F720_g, returm_mul);
-
-
-			//load demo
-
-			utils::hook::call(0x1414332B7_g, sub_1414326E0);
-
-			sub_141432B00_hook.create(0x141432B00_g, sub_141432B00_);
-			sub_1412C6AA0_hook.create(0x1412C6AA0_g, sub_1412C6AA0_);
-
-		//	utils::hook::call(0x1412C4C71_g, sub_1412C6AA0_);
-		//	utils::hook::call(0x1414332AC_g, sub_141432B00_);
-
-
-//			utils::hook::call(0x1412D4DF5_g, sub_141433370);
-
-			//Demo_OpenFileRead
-		//	utils::hook::call(0x1426013CE_g, demo_open_file_read_stub); // ^^
-
 			demo_start_record_hook.create(0x142646BD0_g, demo_start_record_f_stub);
 			demo_is_enabled_hook.create(0x142600120_g, demo_is_enable_stub);
 
@@ -575,11 +208,6 @@ namespace demo_patches
 			command::add("demo_record", game::Demo_StartRecord_f);
 			demo_add_anim_hook.create(0x141433300_g, demo_add_anim_stub);
 			sub_141433370_hook.create(0x141433370_g, sub_141433370);
-			SL_ConvertToString_hook.create(0x1412D7160_g, SL_ConvertToString_stub);
-
-		//	utils::hook::nop(0x1412C6BE4_g, 24);
-		//	utils::hook::nop(0x1412C73F3_g, 40);
-		//	utils::hook::nop(0x1412C4FF7_g, 5);
 		}
 	};
 }
