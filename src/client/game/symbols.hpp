@@ -103,10 +103,11 @@ namespace game
 	WEAK symbol<uint8_t(msg_t* msg)> MSG_ReadByte{0x142155450, 0x14050D1B0};
 
 	// WFT
+	WEAK symbol<__int64(const char*, int)> BG_LoadAnim{ 0x14265E310 };
 	WEAK symbol<__int64()> sub_1414323D0{ 0x1414323D0 };
 	WEAK symbol<__int64()> sub_142600220{ 0x142600220 };
-//	WEAK symbol<__int64(__int64 a1)> sub_1412D7E90{ 0x1412D7E90 };
-	WEAK symbol<__int64(__int64 a1, __int64 a2)> sub_1412D7E90{ 0x1412D7E90 };
+	WEAK symbol<__int64(__int64 a1)> sub_1412D7E90{ 0x1412D7E90 };
+	WEAK symbol<__int64(__int64 a1, __int64 a2)> sub_1412D7E90_{ 0x1412D7E90 };
 	WEAK symbol<__int64(__int64 a1)> sub_142156F30{ 0x142156F30 };
 	WEAK symbol<__int64(__int64, __int64, __int64)> SL_GetString_{ 0x1412D7B20 };
 	WEAK symbol<__int64(__int64, int)> sub_142155300{ 0x142155300 };
