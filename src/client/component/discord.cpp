@@ -53,7 +53,7 @@ namespace discord
 
 		void update(const char* joinSecret)
 		{
-			printf("Discord: update: %s - %s\n", joinSecret);
+			printf("Discord: update: %s - %s\n", joinSecret, joinSecret);
 
 			DiscordRichPresence discord_presence{};
 			ZeroMemory(&discord_presence, sizeof(discord_presence));
