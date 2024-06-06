@@ -106,4 +106,3 @@ namespace discord
 #ifndef DEV_BUILD
 REGISTER_COMPONENT(discord::component)
 #endif
-REGISTER_COMPONENT(discord::component)
