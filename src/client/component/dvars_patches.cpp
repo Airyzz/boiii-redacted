@@ -26,7 +26,17 @@ namespace dvars_patches
 				game::dvar_set_flags("gpad_stick_deadzone_min", game::DVAR_ARCHIVE);
 				game::dvar_set_flags("cg_drawLagometer", game::DVAR_ARCHIVE);
 				game::dvar_set_flags("sv_cheats", game::DVAR_ARCHIVE);
-				game::dvar_set_flags("ui_enabled ", game::DVAR_ARCHIVE);
+
+				for (int i = 0; i < *game::g_dvarCount; ++i)
+				{
+					const auto* dvar = reinterpret_cast<const game::dvar_t*>(&game::s_dvarPool[sizeof(game::dvar_t) * i]);
+					if (!dvar->debugName) continue;
+					if (dvar->flags & (game::DVAR_CHANGEABLE_RESET | game::DVAR_UNKNOWN))
+					{
+						game::dvar_remove_flags(dvar->debugName, game::DVAR_CHANGEABLE_RESET | game::DVAR_UNKNOWN);
+					}
+				}
+
 			}
 
 			scheduler::execute(scheduler::pipeline::dvars_flags_patched);
