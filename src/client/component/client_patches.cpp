@@ -11,6 +11,7 @@
 
 #include <mmeapi.h>
 #include "command.hpp"
+#include "workshop.hpp"
 
 namespace client_patches
 {
@@ -52,6 +53,13 @@ namespace client_patches
 				std::filesystem::path path_to_map_folder = "usermaps";
 				if (std::filesystem::exists(path_to_map_folder / mapname)) {
 					utils::hook::copy_string(0x1567D9A24_g, mapname);
+				}
+				else
+				{
+					auto id = workshop::get_usermap_publisher_id(mapname);
+
+					utils::hook::copy_string(0x1567D9A24_g, id.c_str());
+					utils::hook::copy_string(0x1567D9A04_g, mapname);
 				}
 			}
 			game::Com_GametypeSettings_SetGametype(gametype, true);
