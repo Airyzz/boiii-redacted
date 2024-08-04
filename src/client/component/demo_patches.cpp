@@ -17,7 +17,7 @@ namespace demo_patches
 	namespace
 	{
 		utils::hook::detour demo_start_record_hook;
-		;
+		utils::hook::detour LiveFileshare_AddTag_hook;
 
 		void patch_dvars()
 		{
@@ -32,6 +32,20 @@ namespace demo_patches
 		{
 			__int64 result = demo_start_record_hook.invoke<__int64>();
 			return result;
+		}
+
+		__int64 LiveFileshare_AddTag_stub(uint64_t a1, uint64_t a2, int* a3, uint64_t a4, int a5) {
+			uint64_t currentTagCount = *a3;
+
+			if (a2 == UINT64_MAX)
+				a2 = 0;
+
+			if (currentTagCount + 1 <= a5) {
+				*reinterpret_cast<uint64_t*>((currentTagCount << 6) + a4 + 32) = a1;
+				*reinterpret_cast<uint64_t*>((currentTagCount << 6) + a4 + 40) = a2;
+				++(*a3);
+			}
+			return currentTagCount + 1;
 		}
 	}
 
@@ -55,6 +69,7 @@ namespace demo_patches
 			utils::hook::nop(0x1407F205D_g, 2);
 
 			demo_start_record_hook.create(0x142646BD0_g, demo_start_record_f_stub);
+			LiveFileshare_AddTag_hook.create(0x141DEF150_g, LiveFileshare_AddTag_stub);
 
 			command::add("demo_record", game::Demo_StartRecord_f);
 		}
