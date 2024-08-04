@@ -68,12 +68,9 @@ namespace demonware
 		result->m_ownerName = "redacted";
 		result->m_fileName = demoFileName;
 
-		int fix_mod = 0;
-
 		if (utils::io::file_exists(demoFilePath + ".mod"))
 		{
 			result->m_ownerName = "mod " + utils::io::read_file(demoFilePath + ".mod");
-			fix_mod = 1;
 		}
 
 		std::ifstream demoFileTags(demoFilePath + ".tags");
@@ -85,12 +82,6 @@ namespace demonware
 				bdTag tag;
 				demoFileTags.read(reinterpret_cast<char*>(&tag.m_priTag), sizeof(tag.m_priTag));
 				demoFileTags.read(reinterpret_cast<char*>(&tag.m_secTag), sizeof(tag.m_secTag));
-				if (fix_mod == 1 && tag.m_priTag == 2 && tag.m_secTag == 1)
-				{
-					demoFileTags.seekg(-8, std::ifstream::cur);
-					tag.m_secTag = 0;
-					fix_mod = 2;
-				}
 				result->m_tags.push_back(tag);
 			}	
 			demoFileTags.close();
