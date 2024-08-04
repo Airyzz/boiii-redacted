@@ -251,6 +251,8 @@ namespace console
 	{
 		component()
 		{
+			utils::hook::jump(printf, print_stub);
+
 			if (game::is_headless())
 			{
 				if (!AttachConsole(ATTACH_PARENT_PROCESS))
@@ -280,8 +282,6 @@ namespace console
 					return;
 				}
 			}
-
-			utils::hook::jump(printf, print_stub);
 
 			utils::hook::jump(game::select(0x142332C30, 0x1405976B0), queue_message);
 			utils::hook::nop(game::select(0x142332C4A, 0x1405976CA), 2); // Print from every thread
